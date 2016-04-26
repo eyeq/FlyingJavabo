@@ -33,6 +33,7 @@ namespace FlyingJavabo
         public MainForm()
         {
             InitializeComponent();
+
             timer = new Timer();
             timer.Interval = 650;
             timer.Tick += new EventHandler(TimerTick);
@@ -43,15 +44,10 @@ namespace FlyingJavabo
         // ノーマルモードで使用される
         public MainForm(Rectangle Bounds) : this()
         {
-            //フォームのバックカラーを黒に設定
             this.BackColor = Color.Black;
-            //コントロールボックスを表示しないように
-            //FormBorderStyleをNoneに設定
             this.FormBorderStyle = FormBorderStyle.None;
             this.Bounds = Bounds;
-            //フォームを最前面に設定
-            TopMost = true;
-            // マウスカーソルを非表示にする
+            this.TopMost = true;
             Cursor.Hide();
         }
 
@@ -59,21 +55,15 @@ namespace FlyingJavabo
         // プレビューモードで使用される (/p)
         public MainForm(IntPtr PreviewHandle) : this()
         {
-            // このウィンドの親ウィンドウにプレビューウィンドを設定
             SetParent(this.Handle, PreviewHandle);
-
-            // この子ウィンドウをスクリーンセーバーの選択ダイアログボックスが閉じられたとき
             SetWindowLong(this.Handle, -16, new IntPtr(GetWindowLong(this.Handle, -16) | 0x40000000));
 
-            //ウィンドウサイズを親ウィンドウのサイズに設定する
             Rectangle ParentRect;
             GetClientRect(PreviewHandle, out ParentRect);
             this.Size = ParentRect.Size;
 
-            // ロケーションを(0, 0)に設定
             this.Location = new Point(0, 0);
-
-            IsPreviewMode = true;
+            this.IsPreviewMode = true;
         }
 
         #endregion
