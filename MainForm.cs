@@ -25,8 +25,8 @@ namespace FlyingJavabo
 
         private const String TITLE = "FlyingJavabo";
 
-        private Timer timer;
         private bool IsPreviewMode = false;
+        private Timer timer;
 
         #region Constructors
 
@@ -35,7 +35,7 @@ namespace FlyingJavabo
             InitializeComponent();
 
             timer = new Timer();
-            timer.Interval = 650;
+            timer.Interval = 100;
             timer.Tick += new EventHandler(TimerTick);
             timer.Start();
         }
@@ -70,13 +70,17 @@ namespace FlyingJavabo
 
         #region Screen
 
+        private ScreenDrawer drawer;
+
         private void TimerTick(object sender, System.EventArgs e)
         {
+            if(drawer == null)
+            {
+                drawer = new ScreenDrawer(Width, Height);
+            }
             System.Drawing.Graphics graphics = this.CreateGraphics();
-            ScreenDrawer drawer = new ScreenDrawer();
-            drawer.Draw(graphics, Width, Height);
+            drawer.Draw(graphics);
         }
-
 
         #endregion
 
