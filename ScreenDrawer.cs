@@ -20,7 +20,6 @@ namespace FlyingJavabo
         private System.Drawing.Size dukeSize;
         private System.Drawing.Size buttonSize;
         private System.Drawing.Size moveSpaceSize;
-        private System.Drawing.Rectangle moveRect;
         private System.Drawing.Rectangle skyRect;
 
         private System.Drawing.Bitmap backgroundImage;
@@ -38,15 +37,13 @@ namespace FlyingJavabo
             g.FillRectangle(System.Drawing.Brushes.White, 0, 0, width, height);
             DrawSky(g, graphicSize, System.Drawing.Color.LightCoral, System.Drawing.Color.White);
             System.Drawing.Point point = DrawFloor(g, graphicSize, tileSize, radian, System.Drawing.Brushes.Lime, System.Drawing.Brushes.Honeydew);
-
-            moveRect = new System.Drawing.Rectangle(-point.X, 0, point.X * 2, point.Y);
-            point = rotateX(point, radian);
-            moveSpaceSize = new System.Drawing.Size(graphicSize.Width / 2 - point.X, graphicSize.Height / 2 - point.Y);
+            
+            moveSpaceSize = new System.Drawing.Size(point.X * 2, point.Y);
 
             skyRect = new System.Drawing.Rectangle(0, 0, graphicSize.Width, graphicSize.Height / 2);
 
-            dukeManager = new DukeManager(moveSpaceSize.Height / 4);
-            buttonManager = new JavaButtonManager(moveSpaceSize.Height / 3);
+            dukeManager = new DukeManager(moveSpaceSize.Height / 16);
+            buttonManager = new JavaButtonManager(moveSpaceSize.Height / 4);
         }
 
         public void Draw(System.Drawing.Graphics graphics)
@@ -55,10 +52,10 @@ namespace FlyingJavabo
             System.Drawing.Graphics g = System.Drawing.Graphics.FromImage(image);
             g.DrawImage(backgroundImage, 0, 0);
 
-            dukeManager.Move(moveRect);
-            DrawDuke(g, dukeSize, dukeManager, radian, dukeImage);
+            dukeManager.Move(moveSpaceSize);
+            DrawDuke(g, moveSpaceSize, dukeSize, dukeManager, radian, dukeImage);
 
-            buttonManager.Move(skyRect, moveRect.Height);
+            buttonManager.Move(skyRect, moveSpaceSize.Height);
             DrawButton(g, buttonSize, buttonManager, buttonImage);
 
             graphics.DrawImage(image, 0, 0);
@@ -124,23 +121,23 @@ namespace FlyingJavabo
 
         #endregion
 
-        private void DrawDuke(System.Drawing.Graphics graphics, System.Drawing.Size dukeSize, DukeManager manager, double radian, System.Drawing.Image image)
+        private void DrawDuke(System.Drawing.Graphics graphics, System.Drawing.Size moveSpaceSize, System.Drawing.Size dukeSize, DukeManager manager, double radian, System.Drawing.Image image)
         {
             double COSA = Math.Cos(radian);
             double SINA = Math.Sin(radian);
             
             for (int i = 0; i < manager.DukeNumber; i++)
             {
-                System.Drawing.Point duke = manager.GetDukePoint(i);
+                System.Drawing.Point duke = translate(manager.GetDukePoint(i), -moveSpaceSize.Width / 2, 0);
                 System.Drawing.Point size = new System.Drawing.Point(duke.X, duke.Y - dukeSize.Height);
 
                 duke = rotateX(duke, COSA, SINA);
                 duke = scale(duke, 1, -1);
-                duke = translate(duke, graphicSize.Width / 2, - moveSpaceSize.Height + graphicSize.Height);
+                duke = translate(duke, graphicSize.Width / 2, moveSpaceSize.Height);
 
                 size = rotateX(size, COSA, SINA);
                 size = scale(size, 1, -1);
-                size = translate(size, graphicSize.Width / 2, -moveSpaceSize.Height + graphicSize.Height);
+                size = translate(size, graphicSize.Width / 2, moveSpaceSize.Height);
 
                 int sizeInt = size.Y - duke.Y;
                 if(sizeInt * 4 < dukeSize.Height)
@@ -165,7 +162,7 @@ namespace FlyingJavabo
                 }
                 int width = buttonSize.Width / depth;
                 int height = buttonSize.Height / depth;
-                graphics.DrawImage(image, new System.Drawing.Rectangle(button.X - width, button.Y - height, width, height));
+                graphics.DrawImage(image, new System.Drawing.Rectangle(button.X - width / 2, button.Y - height / 2, width, height));
             }
         }
 

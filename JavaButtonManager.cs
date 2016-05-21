@@ -38,7 +38,7 @@ namespace FlyingJavabo
                 isInit = true;
                 InitButtons(moveSpace, depth);
             }
-            int speed = depth / 400;
+            int speed = System.Math.Max(1, depth / 1024);
             for (int i = 0; i < ButtonNumber; i++)
             {
                 depthes[i] -= speed;

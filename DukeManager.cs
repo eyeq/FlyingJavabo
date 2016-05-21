@@ -24,31 +24,29 @@ namespace FlyingJavabo
             return dukes[dukeIndex];
         }
 
-        public void Move(System.Drawing.Rectangle moveSpace)
+        public void Move(System.Drawing.Size moveSpace)
         {
             if (!isInit)
             {
                 isInit = true;
                 InitDukes(moveSpace);
             }
-            int speed = moveSpace.Width / 100;
+            int speed = System.Math.Max(1, moveSpace.Width / 128);
             int height = moveSpace.Height;
             for (int i = 0; i < DukeNumber; i++)
             {
                 dukes[i].Y -= speed;
-                dukes[i].Y -= moveSpace.Y;
                 dukes[i].Y = (dukes[i].Y % height + height) % height;
-                dukes[i].Y += moveSpace.Y;
             }
         }
 
-        private void InitDukes(System.Drawing.Rectangle moveSpace)
+        private void InitDukes(System.Drawing.Size moveSpace)
         {
             System.Random rand = new Random();
             for (int i = 0; i < DukeNumber; i++)
             {
-                dukes[i].X = rand.Next(moveSpace.Width) + moveSpace.X;
-                dukes[i].Y = rand.Next(moveSpace.Height) + moveSpace.Y;
+                dukes[i].X = rand.Next(moveSpace.Width);
+                dukes[i].Y = rand.Next(moveSpace.Height);
                 for(int j = 0; j < i; j++)
                 {
                     if(dukes[j].Y < dukes[i].Y)
